@@ -2,6 +2,7 @@
 
 $(function () {
     var pointsSelected = [];
+	var segmentIndex = 1;
 	
 	$.getJSON('http://www.highcharts.com/samples/data/jsonp.php?filename=usdeur.json&callback=?', function (data) {
 
@@ -30,7 +31,7 @@ $(function () {
                 }
             },
             legend: {
-                enabled: false
+                enabled: true
             },
             plotOptions: {
                 area: {
@@ -61,7 +62,7 @@ $(function () {
 
             series: [{
                 type: 'area',
-                name: '数值',
+                name: '原始数据',
                 data: data,
 				allowPointSelect: true,
 				marker: {
@@ -93,8 +94,32 @@ $(function () {
 							    }
 								var r = confirm('您选择了 ' + str + '，确认这个分段吗？');
                                 if (r == true) {
-									
+									var chart = $('#container').highcharts();
+									var start, end;
+									if (pointsSelected[0].x < pointsSelected[1].x) {
+										start = pointsSelected[0].index;
+										end = pointsSelected[1].index;
+									} else {
+										start = pointsSelected[1].index;
+										end = pointsSelected[0].index;
+									}
+									var newSeriesData = data.slice(start, end + 1);
+									chart.addSeries({
+										data: newSeriesData,
+										name: '数据分段' + segmentIndex
+									});
+									// Clear data
+									for (i = 0; i < pointsSelected.length; i++) {
+								        pointsSelected[i].select(false);
+							        }
+									pointsSelected = [];
+									$('#points').text('');	
+									// Increment segmentIndex
+									segmentIndex++;
+									// Return false so that the 2nd point doesn't end up getting selected
+									return false;
 								} else {
+									// Clear data
 									for (i = 0; i < pointsSelected.length; i++) {
 								        pointsSelected[i].select(false);
 							        }
