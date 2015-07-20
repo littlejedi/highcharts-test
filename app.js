@@ -30,6 +30,9 @@ $(function () {
                     text: '数值'
                 }
             },
+			tooltip: {
+				shared : true
+			},
             legend: {
                 enabled: true
             },
@@ -106,8 +109,19 @@ $(function () {
 									var newSeriesData = data.slice(start, end + 1);
 									chart.addSeries({
 										data: newSeriesData,
-										name: '数据分段' + segmentIndex,
-										lineWidth: 5
+										name: '植物生长阶段' + segmentIndex,
+										lineWidth: 5,
+										allowPointSelect: true,
+				                        marker: {
+					                        enabled: true,
+					                        states: {
+						                        select: {
+							                        fillColor: 'red',
+							                        lineWidth: 0,
+							                        radius: 5
+						                        }
+					                        }
+				                        }
 									});
 									// Clear data
 									for (i = 0; i < pointsSelected.length; i++) {
