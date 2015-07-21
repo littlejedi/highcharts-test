@@ -4,6 +4,17 @@ $(function () {
     var pointsSelected = [];
 	var segmentIndex = 1;
 	
+	function newRandomColor() {
+        var color = [];
+        color.push((Math.random() * 255).toFixed());
+        color.push((Math.random() * 255).toFixed());
+        color.push((Math.random() * 255).toFixed());
+        color.push((Math.random()).toFixed(2));
+        var text = 'rgba(' + color.join(',') + ')';
+        console.log(text);
+        return text;
+    }
+	
 	$.getJSON('http://www.highcharts.com/samples/data/jsonp.php?filename=usdeur.json&callback=?', function (data) {
 
         $('#container').highcharts({
@@ -38,7 +49,7 @@ $(function () {
             },
             plotOptions: {
                 area: {
-                    fillColor: {
+                    /*fillColor: {
                         linearGradient: {
                             x1: 0,
                             y1: 0,
@@ -49,7 +60,7 @@ $(function () {
                             [0, Highcharts.getOptions().colors[0]],
                             [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
                         ]
-                    },
+                    },*/
                     marker: {
                         radius: 2
                     },
@@ -64,6 +75,18 @@ $(function () {
             },
 
             series: [{
+				fillColor: {
+                        linearGradient: {
+                            x1: 0,
+                            y1: 0,
+                            x2: 0,
+                            y2: 1
+                        },
+                        stops: [
+                            [0, Highcharts.getOptions().colors[0]],
+                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                        ]
+                },
                 type: 'area',
                 name: '原始数据',
                 data: data,
@@ -109,9 +132,22 @@ $(function () {
 									var newSeriesData = data.slice(start, end + 1);
 									chart.addSeries({
 										data: newSeriesData,
+										type: 'area',
 										name: '植物生长阶段' + segmentIndex,
 										lineWidth: 5,
 										allowPointSelect: true,
+									    color: {
+												linearGradient: {
+													x1: 0,
+													y1: 0,
+													x2: 0,
+													y2: 1
+												}, 
+												stops: [
+													[0, newRandomColor()],
+                                                    [1, newRandomColor()]
+												]
+										},
 				                        marker: {
 					                        enabled: true,
 					                        states: {
@@ -121,7 +157,7 @@ $(function () {
 							                        radius: 5
 						                        }
 					                        }
-				                        }
+										}
 									});
 									// Clear data
 									for (i = 0; i < pointsSelected.length; i++) {
